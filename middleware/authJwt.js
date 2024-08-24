@@ -1,7 +1,32 @@
 const db = require("../models");
 // const config = require("../config.db");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 const User = db.user;
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true);
+  } else {
+    cb(new Error('Invalid file type, only JPEG and PNG is allowed!'), false);
+  }
+};
+
+upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 5 },
+  fileFilter: fileFilter,
+});
 
 verifyToken = (req, res, next) => {
   let token = req.cookies.token;
@@ -88,5 +113,6 @@ const authJwt = {
   isAdmin,
   isSuperAdmin,
   isSuperAdminOrAdmin,
+  upload
 };
 module.exports = authJwt;

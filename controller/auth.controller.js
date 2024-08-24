@@ -121,7 +121,6 @@ exports.auth = async (req, res) => {
   try {
     // Mendapatkan token dari cookies
     const token = req.cookies.token;
-    console.log('token :', token)
     // Memeriksa apakah token ada
     if (!token) {
       return res.status(401).json({ message: 'User not logged in', loggin: false });
